@@ -15,19 +15,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Get previous tag
-        id: previous_tag
-        run: |
-          PREVIOUS_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))
-          echo "::set-output name=previous_tag::$PREVIOUS_TAG"
-        shell: bash
-
       - name: Get commit messages and changes
         id: commit_changes
         run: |
-          TAG_REF=${{ github.ref }}
-          PREVIOUS_TAG=${{ steps.previous_tag.outputs.previous_tag }}
-          COMMIT_MESSAGES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..$TAG_REF)
+          TAG_NAME="${{ github.ref }}"
+          PREVIOUS_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))
+          COMMIT_MESSAGES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..$TAG_NAME)
           echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
         shell: bash
 
