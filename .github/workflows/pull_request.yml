@@ -2,7 +2,7 @@ name: Feed SDK test on every PR
 
 on:
   pull_request:
-    branches-ignore: #exclude the branches from the test
+    branches-ignore:
       - master
       
 jobs:
