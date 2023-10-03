@@ -14,17 +14,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Get commit messages and changes
+        id: commit_changes
+        run: |
+          TAG_REF=${{ github.ref }}
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 $TAG_REF^)
+          COMMIT_MESSAGES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..$TAG_REF)
+          echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
+        shell: bash
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+          body: ${{ steps.commit_changes.outputs.commit_messages }}
           draft: false
           prerelease: false
