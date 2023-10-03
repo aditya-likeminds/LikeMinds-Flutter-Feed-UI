@@ -20,8 +20,10 @@ jobs:
         run: |
           PREVIOUS_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))
           COMMIT_MESSAGES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..${{ github.ref }})
-          COMPARE_URL="https://github.com/${{ github.repository }}/compare/${{ steps.previous_tag.outputs.previous_tag }}...${{ github.ref }}"
-          echo "::set-output name=commit_messages::$COMMIT_MESSAGES\n\n[View changes]($COMPARE_URL)"
+          echo "What's Changed"
+          echo "$COMMIT_MESSAGES"
+          echo "Full Changelog: $PREVIOUS_TAG...${{ github.ref }}"
+          echo "::set-output name=commit_messages::What's Changed\n\n$COMMIT_MESSAGES\n\nFull Changelog: $PREVIOUS_TAG...${{ github.ref }}"
         shell: bash
 
       - name: Create Release
