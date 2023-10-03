@@ -15,18 +15,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Get previous tag
+        id: previous_tag
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 ${{ github.ref }}^)
+          echo "::set-output name=previous_tag::$PREVIOUS_TAG"
+        shell: bash
+
       - name: Get commit messages and changes
         id: commit_changes
         run: |
-          TAG_NAME="${{ github.ref }}"
-          PREVIOUS_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))
-          COMMIT_MESSAGES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..$TAG_NAME)
-          DIFF=$(git diff $PREVIOUS_TAG..$TAG_NAME)
-          echo "Changes in this Release"
-          echo "$COMMIT_MESSAGES"
-          echo "Code changes:"
-          echo "$DIFF"
-          echo "::set-output name=commit_messages::Changes in this Release\n$COMMIT_MESSAGES\n\nCode changes:\n$DIFF"
+          PREVIOUS_TAG=${{ steps.previous_tag.outputs.previous_tag }}
+          COMMIT_MESSAGES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..${{ github.ref }})
+          COMPARE_URL="https://github.com/${{ github.repository }}/compare/${{ steps.previous_tag.outputs.previous_tag }}...${{ github.ref }}"
+          echo "::set-output name=commit_messages::$COMMIT_MESSAGES\n\n[View changes]($COMPARE_URL)"
         shell: bash
 
       - name: Create Release
