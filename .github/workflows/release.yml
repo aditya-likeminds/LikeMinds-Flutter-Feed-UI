@@ -15,25 +15,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Get commit messages and changes
-        id: commit_changes
-        run: |
-          PREVIOUS_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))
-          COMMIT_MESSAGES=$(git log --pretty=format:"- %s" $PREVIOUS_TAG..${{ github.ref }})
-          echo "What's Changed"
-          echo "$COMMIT_MESSAGES"
-          echo "Full Changelog: $PREVIOUS_TAG...${{ github.ref }}"
-          echo "::set-output name=commit_messages::What's Changed\n\n$COMMIT_MESSAGES\n\nFull Changelog: $PREVIOUS_TAG...${{ github.ref }}"
-        shell: bash
-
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
+        id: Changelog
+        
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: actions/create-release@latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: ${{ steps.commit_changes.outputs.commit_messages }}
+          body: |
+            ${{ steps.Changelog.outputs.changelog }}
           draft: false
           prerelease: false
