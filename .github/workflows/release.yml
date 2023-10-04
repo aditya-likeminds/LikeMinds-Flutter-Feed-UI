@@ -20,6 +20,15 @@ jobs:
         uses: release-drafter/release-drafter@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Generate Release Notes
+        id: generate_release_notes
+        run: |
+          mkdir -p .github/release-drafter
+          release-drafter -o .github/release-drafter/release-notes.md
+        env:
+          RELEASE_DRAFTER_CONFIG: .github/release-drafter.yml
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         id: create_release
