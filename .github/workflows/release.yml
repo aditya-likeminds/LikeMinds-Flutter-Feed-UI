@@ -11,12 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Release Drafter
-        uses: release-drafter/release-drafter@latest
+        uses: release-drafter/release-drafter@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
