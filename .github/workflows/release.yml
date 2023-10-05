@@ -6,18 +6,13 @@ on:
       - 'v*'
 
 jobs:
-  create-github-release:
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
+  release:
+    name: "Release"
+
+    runs-on: "ubuntu-latest"
+
     steps:
-      - name: Create Release Notes
-        uses: actions/github-script@v4.0.2
+      - name: "Create release"
+        uses: "ergebnis/.github/actions/github/release/create@1.8.0"
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            await github.request(`POST /repos/${{ github.repository }}/releases`, {
-              tag_name: "${{ github.ref }}",
-              generate_release_notes: true
-            });
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
