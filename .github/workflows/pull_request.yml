@@ -2,7 +2,7 @@ name: Feed SDK test on every PR
 
 on:
   pull_request:
-    branches-ignore: #exclude the branches from the test
+    branches-ignore:
       - master
       
 jobs:
@@ -14,7 +14,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
-      - run: flutter pub get #installing the plugins for the flutter project
+      - run: flutter pub get
       
       - name: Lint
         run: flutter analyze > lint-results.txt
