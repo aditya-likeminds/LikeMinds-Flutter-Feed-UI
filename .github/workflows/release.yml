@@ -11,33 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Release Drafter
-        uses: release-drafter/release-drafter@v5
+      - name: Create Release Notes
+        uses: actions/github-script@v4.0.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Generate Release Notes
-        id: generate_release_notes
-        run: |
-          mkdir -p .github/release-drafter
-          release-drafter -o .github/release-drafter/release-notes.md
-        env:
-          RELEASE_DRAFTER_CONFIG: .github/release-drafter.yml
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body_path: .github/release-drafter/release-notes.md
-          draft: false
-          prerelease: false
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            await github.request(`POST /repos/${{ github.repository }}/releases`, {
+              tag_name: "${{ github.ref }}",
+              generate_release_notes: true
+            });
