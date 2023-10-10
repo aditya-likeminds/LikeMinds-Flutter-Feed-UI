@@ -37,8 +37,8 @@ jobs:
     - name: Push Git Tag
       run: |
         # Git login
-        git config --global user.email "${{ env.GIT_EMAIL }}"
-        git config --global user.name "${{ env.GIT_USERNAME }}"
+        git config --global user.email ${{ env.GIT_EMAIL }}
+        git config --global user.name ${{ env.GIT_USERNAME }}
 
         # Push a Git tag with the new version
         export current_version=$(cat pubspec.yaml | grep 'version:' | awk '{print $2}')
