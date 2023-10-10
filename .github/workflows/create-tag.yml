@@ -16,6 +16,9 @@ jobs:
     - name: Check for version changes
       id: check_version
       run: |
+        # Fetch all tags from the remote repository
+        git fetch --tags
+        
         # Get the previous version from the last release tag
         export previous_version=$(git describe --tags --abbrev=0)
         
