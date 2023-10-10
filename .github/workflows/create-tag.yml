@@ -56,7 +56,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Create Release
-        run: gh release create ${{ github.ref }} --generate-notes
+        run: |
+          export current_version=$(cat pubspec.yaml | grep 'version:' | awk '{print $2}')
+          gh release create "v$current_version" --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
