@@ -37,3 +37,5 @@ jobs:
         export current_version=$(cat pubspec.yaml | grep 'version:' | awk '{print $2}')
         git tag -a "v$current_version" -m "Version $current_version"
         git push origin "v$current_version"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
