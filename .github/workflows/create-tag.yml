@@ -7,6 +7,7 @@ on:
 
 jobs:
   create_tag:
+    name: Create Git Tag
     runs-on: ubuntu-latest
     
     steps:
@@ -16,7 +17,6 @@ jobs:
           fetch-depth: 0
 
     - name: Check for version changes
-      id: check_version
       run: |
         # Fetch all tags from the remote repository
         git fetch --tags
@@ -29,15 +29,12 @@ jobs:
         
         if [[ "$previous_version" != "v$current_version" ]]; then
           echo "Version has changed from $previous_version to v$current_version."
-          echo "::set-output name=version_changed::true"
         else
           echo "Version has not changed."
-          echo "::set-output name=version_changed::false"
-          exit 0
+          exit 1
         fi
 
     - name: Push Git Tag
-      if: steps.check_version.outputs.version_changed == 'true'
       run: |
         # Git login
         git config --global user.email "aditya.singh@likeminds.community"
