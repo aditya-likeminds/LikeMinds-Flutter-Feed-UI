@@ -60,8 +60,6 @@ jobs:
           fetch-depth: 0
 
       - name: Create Release
-        run: |
-          export current_version=$(cat pubspec.yaml | grep 'version:' | awk '{print $2}')
-          gh release create "v$current_version" --generate-notes
+        run: gh release create "$(git describe --tags --abbrev=0)" --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
